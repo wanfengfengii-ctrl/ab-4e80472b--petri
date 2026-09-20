@@ -1,0 +1,24 @@
+services:
+  # 纯前端审计台：nginx 托管静态资源，不调用任何业务后端
+  web:
+    build: .
+    image: petri-audit-web
+    ports:
+      # 宿主机端口可通过 WEB_PORT 环境变量或 .env 文件配置
+      - "${WEB_PORT:-8080}:80"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/healthz"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 5s
+
+  # 一次性验收服务：在真实 Chromium 中执行场景，完成后自行退出并以退出码报告结果
+  verify:
+    build: ./verify
+    image: petri-audit-verify
+    depends_on:
+      web:
+        condition: service_healthy
+    environment:
+      BASE_URL: http://web:80

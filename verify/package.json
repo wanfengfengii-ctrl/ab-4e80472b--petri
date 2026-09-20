@@ -1,0 +1,10 @@
+{
+  "name": "petri-audit-verify",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "一次性验收服务：在真实 Chromium 中执行审计台场景",
+  "dependencies": {
+    "playwright": "1.48.2"
+  }
+}
